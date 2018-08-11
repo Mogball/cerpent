@@ -29,7 +29,7 @@ void trim(std::string *s) {
 
 string join(const vector<string> &l, char c) {
     string ret;
-    if (0 == l.size()) {
+    if (l.empty()) {
         return ret;
     }
     size_t total = l.size() - 1;
