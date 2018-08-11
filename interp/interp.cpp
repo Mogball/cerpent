@@ -22,8 +22,6 @@ error_t Interpreter::processLine(std::string &&line) {
         string buffer = join(m_lineBuffer, ' ');
         cout << buffer << endl;
     }
-
     assert(val.empty());
-
     return OK;
 }
