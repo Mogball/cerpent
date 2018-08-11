@@ -7,8 +7,6 @@
 
 class Interpreter {
 public:
-    Interpreter();
-
     error_t processLine(std::string &&line);
 
 private:

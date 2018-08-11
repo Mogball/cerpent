@@ -8,7 +8,7 @@ using namespace std;
 
 static auto s_findSpace = [](int c) {
     return !isspace(c);
-}
+};
 
 
 static inline void leftTrim(std::string *s) {

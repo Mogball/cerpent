@@ -5,14 +5,12 @@
 
 #include <cassert>
 
-static constexpr size_t LINEBUFFER_SIZE = 32;
+using namespace std;
+
 static constexpr char SEMICOLON = ';';
 
-Interpreter::Interpreter() :
-    m_lineBuffer(LINEBUFFER_SIZE) {}
-
 error_t Interpreter::processLine(std::string &&line) {
-    string val(line);
+    string val(move(line));
     trim(&val);
     if (val.empty()) {
         return OK;
@@ -21,6 +19,7 @@ error_t Interpreter::processLine(std::string &&line) {
     if (SEMICOLON == m_lineBuffer.back().back()) {
         string buffer = join(m_lineBuffer, ' ');
         cout << buffer << endl;
+        m_lineBuffer.clear();
     }
     assert(val.empty());
     return OK;
