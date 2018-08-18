@@ -1,6 +1,6 @@
 #pragma once
 
-#include "error.hpp"
+#include "error.h"
 #include <string>
 #include <vector>
 
@@ -14,5 +14,5 @@ error_t parseType(string_it it, string_it end, unsigned *ret);
 error_t isVariableDeclare(
         const string_vec &toks,
         unsigned *type,
-        string_it *name
+        string_it *name,
         string_it *val);

@@ -1,7 +1,7 @@
 #include "macro.h"
 #include "const_hash.hpp"
 #include "const_sort.hpp"
-#include "error.hpp"
+#include "error.h"
 #include "strutil.hpp"
 #include "to_array.hpp"
 #include "validate.hpp"
@@ -59,11 +59,12 @@ enum Type : unsigned {
 
 template<size_t N>
 static inline uint32_t valueLookup(const array<uint32_t, N> &arr, uint32_t val) {
-    auto ret = lower_bound(arr.begin(), arr.end(), val);
-    if (ret == arr.end()) {
-        return 0;
+    for (const auto &el : arr) {
+        if (el == val) {
+            return el;
+        }
     }
-    return *ret;
+    return 0;
 }
 
 static inline uint32_t builtinType(uint32_t val) {

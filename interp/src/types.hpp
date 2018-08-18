@@ -19,4 +19,4 @@ enum Type : unsigned {
 
     DOUBLE = 0x0400,
     LONG_DOUBLE = 0x0401
-}
+};

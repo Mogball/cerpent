@@ -16,7 +16,7 @@ namespace det {
         if (l < r) {
             std::size_t m = l;
             for (std::size_t i = l + 1; i < r; ++i) {
-                if (arr[i] < arr[l]) {
+                if (arr[i] > arr[l]) {
                     const_swap(arr[++m], arr[i]);
                 }
             }

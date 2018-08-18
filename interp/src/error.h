@@ -1,7 +1,10 @@
 #pragma once
 
 typedef int error_t;
-enum Error : error_t {
+enum {
+    // OK
+    OK = 0x0,
+
     // IDENTIFIER
     INVALID_IDENTIFIER =       0x0100,
     INVALID_IDENTIFIER_START = 0x0101,
@@ -13,11 +16,10 @@ enum Error : error_t {
     INVALID_TYPENAME       = 0x0203,
     INVALID_VARIABLE_DECL  = 0x0204,
     NOT_VARIABLE_DECL      = 0x0205,
+    INVALID_CHAR_LITERAL   = 0x0206,
+    INVALID_INT_LITERAL    = 0x0207,
+    INVALID_FLOAT_LITERAL  = 0x0208,
 
     // INTERPRETER
-    INVALID_LINE = 0x0300,
-
-
-    // OK
-    OK = 0x0
+    INVALID_LINE = 0x0300
 };

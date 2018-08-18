@@ -1,3 +1,4 @@
+#include "errorstr.h"
 #include "interp.hpp"
 #include <iostream>
 #include <cassert>
@@ -12,7 +13,7 @@ static error_t interp_loop() {
         err = interp.processLine(move(line));
         assert(line.empty());
         if (OK != err) {
-            printf("ERROR: 0x%04x -> %s", err, interpStrError(err));
+            printf("ERROR: 0x%04x -> %s\n", err, interpStrError(err));
         }
     }
     return err;
