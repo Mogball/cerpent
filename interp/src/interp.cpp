@@ -1,5 +1,6 @@
 #include "interp.hpp"
 #include "strutil.hpp"
+#include "validate.hpp"
 #include <iostream>
 #include <cassert>
 
@@ -33,6 +34,10 @@ error_t Interpreter::processBuffer(const std::string &buf) {
         // Remove single semicolon token
         toks.pop_back();
     }
+    // Line was only semicolon
+    if (toks.empty()) {
+        return OK;
+    }
 
     cout << buf << endl;
     cout << '[';
@@ -45,4 +50,18 @@ error_t Interpreter::processBuffer(const std::string &buf) {
         }
     }
     cout << ']' << endl;
+
+    // Check for variable declaration
+    unsigned type;
+    string_it name;
+    string_it val;
+    error_t err = isVariableDeclare(toks, &type, &name, &val);
+    if (NOT_VARIABLE_DECL != err) {
+        if (OK != err) {
+            return err;
+        }
+        return declareVariable(type, *name, *val);
+    }
+
+    return INVALID_LINE;
 }

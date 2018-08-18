@@ -4,6 +4,7 @@
 #include "error.hpp"
 #include "strutil.hpp"
 #include "to_array.hpp"
+#include "validate.hpp"
 #include <algorithm>
 #include <array>
 #include <string>
@@ -78,10 +79,16 @@ static inline uint32_t sizeType(uint32_t val) {
 }
 
 
-error_t parseType(
-        vector<string>::const_iterator it,
-        vector<string>::const_iterator end,
-        unsigned *ret) {
+error_t isTypeStart(const std::string &s) {
+    uint32_t val = det::fnv1a_32(s.c_str(), s.size());
+    bool found =
+        0 != builtinType(val) ||
+        0 != signedType(val) ||
+        0 != sizeType(val);
+    return found ? OK : INVALID_TYPENAME;
+}
+
+error_t parseType(string_it it, string_it end, unsigned *ret) {
     assert(nullptr != ret);
     Sign sign = NONE;
     Size size = NORMAL;
