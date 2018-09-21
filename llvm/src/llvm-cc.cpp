@@ -1,7 +1,5 @@
 #include <llvm/Option/Arg.h>
 #include <clang/CodeGen/ObjectFilePCHContainerOperations.h>
-#include <clang/Config/config.h>
-#include <clang/Basic/Stack.h>
 #include <clang/Driver/DriverDiagnostic.h>
 #include <clang/Driver/Options.h>
 #include <clang/Frontend/CompilerInstance.h>
@@ -39,7 +37,48 @@ static void LLVMErrorHandler(void *userData, const string &message, bool genDiag
 int ccMain(ArrayRef<const char *> argv, const char *argv0, void *mainAddr) {
     // TODO CompilerInstance::setVirtualFileSystem and inMemoryFileSystem
     unique_ptr<CompilerInstance> clang(new CompilerInstance());
-    IntrusiveRefCntPtr<DiagnosticsIDs> diagId(new DiagnosticsIDs());
+    IntrusiveRefCntPtr<DiagnosticIDs> diagId(new DiagnosticIDs());
 
     auto pchOps = clang->getPCHContainerOperations();
+    pchOps->registerWriter(llvm::make_unique<ObjectFilePCHContainerWriter>());
+    pchOps->registerReader(llvm::make_unique<ObjectFilePCHContainerReader>());
+
+    llvm::InitializeAllTargets();
+    llvm::InitializeAllTargetMCs();
+    llvm::InitializeAllAsmPrinters();
+    llvm::InitializeAllAsmParsers();
+
+    IntrusiveRefCntPtr<DiagnosticOptions> diagOpts = new DiagnosticOptions();
+    TextDiagnosticBuffer *diagsBuffer = new TextDiagnosticBuffer();
+    DiagnosticsEngine diags(diagId, &*diagOpts, diagsBuffer);
+    bool success = CompilerInvocation::CreateFromArgs(
+            clang->getInvocation(), argv.begin(), argv.end(), diags);
+
+    if (clang->getHeaderSearchOpts().UseBuiltinIncludes &&
+        clang->getHeaderSearchOpts().ResourceDir.empty()) {
+        clang->getHeaderSearchOpts().ResourceDir =
+            CompilerInvocation::GetResourcesPath(argv0, mainAddr);
+    }
+
+    clang->createDiagnostics();
+    if (!clang->hasDiagnostics()) {
+        return 1;
+    }
+
+    llvm::install_fatal_error_handler(
+            LLVMErrorHandler,
+            static_cast<void *>(&clang->getDiagnostics()));
+
+    diagsBuffer->FlushDiagnostics(clang->getDiagnostics());
+    if (!success) {
+        return 1;
+    }
+
+    success = ExecuteCompilerInvocation(clang.get());
+    llvm::TimerGroup::printAll(llvm::errs());
+    llvm::remove_fatal_error_handler();
+    if (clang->getFrontendOpts().DisableFree) {
+        BuryPointer(move(clang));
+    }
+    return !success;
 }

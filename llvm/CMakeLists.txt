@@ -12,24 +12,53 @@ file(GLOB HDRS src/*.hpp)
 
 add_executable(cerp ${SRCS} ${HDRS})
 
+macro (map_target_libs target_name target_libs)
+    foreach (library ${target_libs})
+        llvm_map_components_to_libnames(target_lib "${target_name}${library}")
+        set(TARGET_LIBS ${TARGET_LIBS} ${target_lib})
+    endforeach ()
+endmacro ()
+
+set(TARGET_LIBS)
+foreach (target aarch64 amdgpu arm bpf hexagon lanai mips powerpc sparc systemz x86)
+    map_target_libs(${target} "asmparser;codegen")
+endforeach ()
+foreach (target xcore nvptx msp430)
+    map_target_libs(${target} "asmprinter;codegen")
+endforeach ()
+
 llvm_map_components_to_libnames(LLVM_LIBS
-    native
+    coroutines
+    coverage
+    lto
     option
     )
 
 target_link_libraries(cerp
-    clangTooling
+    clangFrontendTool
     clangFrontend
-    clangDriver
-    clangSerialization
     clangParse
     clangSema
-    clangAnalysis
-    clangEdit
-    clangAST
-    clangLex
+    clangSerialization
+    clangTooling
+    clangDriver
+    clangCodeGen
     clangBasic
+    clangStaticAnalyzerFrontend
+    clangStaticAnalyzerCheckers
+    clangStaticAnalyzerCore
+    clangAnalysis
+    clangAST
+    clangASTMatchers
+    clangEdit
+    clangARCMigrate
+    clangLex
+    clangRewriteFrontend
+    clangRewrite
     ${LLVM_LIBS}
+    ${TARGET_LIBS}
     )
+
+target_include_directories(cerp PRIVATE include)
 
 cotire(cerp)
