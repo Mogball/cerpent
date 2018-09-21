@@ -20,8 +20,15 @@ bool InterpreterVisitor::TraverseType(QualType type) {
     return true;
 }
 
+#include "symboltable.hpp"
+
+static SymbolTable table;
+
 bool InterpreterVisitor::TraverseVarDecl(VarDecl *decl) {
     RecursiveASTVisitor<InterpreterVisitor>::TraverseVarDecl(decl);
-    decl->dump();
+    APValue *val = decl->evaluateValue();
+    if (nullptr != val) {
+        table.addSymbol(decl->getIdentifier()->getName(), val);
+    }
     return true;
 }
