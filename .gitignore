@@ -1,2 +1,5 @@
 interp/build/
+interp/bin/
+llvm/build/
+llvm/bin/
 *.swp

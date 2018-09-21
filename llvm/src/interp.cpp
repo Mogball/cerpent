@@ -28,7 +28,7 @@ error_t Interpreter::processBuffer(const string &buf) {
     error_t ret;
     for (string &unit : toks) {
         trim(&unit);
-        cout << unit << endl;
+        unit += ';';
         ret = processUnit(unit);
         if (OK != ret) {
             return ret;
