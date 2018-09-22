@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
     auto jit = std::make_unique<CerpentJit>(*targetMachine);
     string sourceCode =
         "extern \"C\" int abs(int);"
+        "extern \"C\" int _moshi_ = 5;"
         "extern int *customIntAllocator(unsigned items);"
         "extern \"C\" int *integerDistances(int *x, int *y, unsigned items) {"
             "int *results = customIntAllocator(items);"
@@ -79,4 +80,27 @@ int main(int argc, char *argv[]) {
     outs() << "Integer Distances: ";
     outs() << z[0] << ", " << z[1] << ", " << z[2] << "\n\n";
     outs().flush();
+
+    sourceCode =
+        "extern \"C\" int _moshi_;"
+        "extern \"C\" int printf(const char *fmt, ...);\n"
+        "extern \"C\" int *integerDistances(int *x, int *y, unsigned items);\n"
+        "extern \"C\" void print_distances(int *x, int *y, unsigned items) {\n"
+            "int *results = integerDistances(x, y, items);\n"
+            "for (int i = 0; i < items; ++i) {\n"
+                "printf(\"%d\\n\", results[i]);\n"
+            "}\n"
+            "printf(\"%d\\n\", _moshi_);"
+       "}\n";
+    auto module0 = jit->compileModule(sourceCode, context);
+    if (!module0) {
+        fatalError(module0.takeError());
+    }
+    jit->submitModule(move(*module0));
+    auto jittedFcn0 = jit->getFunction<void(int *, int *, unsigned)>("print_distances");
+    if (!jittedFcn0) {
+        fatalError(jittedFcn0.takeError());
+    }
+    auto print_distances = *jittedFcn0;
+    print_distances(x, y, arrayElements(x));
 }

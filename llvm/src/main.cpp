@@ -4,8 +4,8 @@
 
 using namespace std;
 
-static error_t interp_loop() {
-    Interpreter interp;
+static error_t interp_loop(int argc, char *argv[]) {
+    Interpreter interp(argc, argv);
     error_t err = OK;
     for (string line; getline(cin, line);) {
         err = interp.processLine(move(line));
@@ -17,6 +17,6 @@ static error_t interp_loop() {
     return err;
 }
 
-/*int main(void) {
-    //return static_cast<int>(interp_loop());
-}*/
+int main(int argc, char *argv[]) {
+    return static_cast<int>(interp_loop(argc, argv));
+}

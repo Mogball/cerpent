@@ -4,8 +4,13 @@
 #include <string>
 #include <vector>
 
+class InterpreterJit;
+
 class Interpreter {
 public:
+    Interpreter(int argc, char *argv[]);
+    ~Interpreter();
+
     error_t processLine(std::string &&line);
     error_t processBuffer(const std::string &buf);
     error_t processUnit(const std::string &unit);
@@ -16,5 +21,6 @@ public:
             const std::string &val);
 
 private:
+    std::shared_ptr<InterpreterJit> m_jit;
     std::vector<std::string> m_lineBuffer;
 };

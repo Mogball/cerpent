@@ -1,10 +1,22 @@
 #include "interp.hpp"
-#include "llvm-action.hpp"
+#include "interp-jit.hpp"
+#include "llvm-vardecl.hpp"
+#include <llvm/Support/Error.h>
 #include <clang/Tooling/Tooling.h>
 #include <memory>
 
 using namespace std;
+using namespace llvm;
 using namespace clang;
+
+static void logError(Error err) {
+    handleAllErrors(move(err), [&](const ErrorInfoBase &eib) {
+        errs() << "Fatal Error: ";
+        eib.log(errs());
+        errs() << "\n";
+        errs().flush();
+    });
+}
 
 error_t Interpreter::processUnit(const string &unit) {
     vector<string> args = {"-fsyntax-only"};
@@ -13,7 +25,15 @@ error_t Interpreter::processUnit(const string &unit) {
     if (nullptr != dc) {
         dc->dump();
     }
-    InterpreterConsumer consumer(&ast->getASTContext());
+    VarDeclConsumer consumer(&ast->getASTContext());
     consumer.HandleTranslationUnit(ast->getASTContext());
+    if (consumer.isValidVarDecl()) {
+        auto idx = m_jit->compileDecl(unit, consumer.getVarDeclIdx());
+        if (!idx) {
+            logError(idx.takeError());
+        } else {
+            outs() << "Variable declared: " << *idx << "\n";
+        }
+    }
     return OK;
 }
