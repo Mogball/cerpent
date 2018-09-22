@@ -22,6 +22,9 @@ bool InterpreterVisitor::TraverseType(QualType type) {
 
 bool InterpreterVisitor::TraverseVarDecl(VarDecl *decl) {
     RecursiveASTVisitor<InterpreterVisitor>::TraverseVarDecl(decl);
+    if (decl->isInvalidDecl()) {
+        return true;
+    }
     APValue *val = decl->evaluateValue();
     if (nullptr != val) {
     }
