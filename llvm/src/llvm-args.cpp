@@ -19,7 +19,7 @@ vector<string> getClangArgs(StringRef cpp, StringRef bc) {
         "-fdeprecated-macro",
         "-fmath-errno",
         "-fuse-init-array",
-        "-mrelocation-module",
+        "-mrelocation-model",
         "static",
         "-mthread-model",
         "posix",
@@ -36,7 +36,7 @@ vector<string> getClangArgs(StringRef cpp, StringRef bc) {
 
         "-resource-dir",
         "/usr/lib/clang/6.0.0",
-        "-internal-system",
+        "-internal-isystem",
         "/usr/lib/clang/6.0.0/include",
 
         "-o",

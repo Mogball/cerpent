@@ -17,6 +17,6 @@ static error_t interp_loop() {
     return err;
 }
 
-int main(void) {
-    return static_cast<int>(interp_loop());
-}
+/*int main(void) {
+    //return static_cast<int>(interp_loop());
+}*/
