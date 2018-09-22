@@ -16,6 +16,7 @@ private:
     clang::ASTContext *m_context;
     VarDeclConsumer *m_consumer;
     bool m_validVarDecl;
+    bool m_externVarDecl;
     std::string m_varDeclIdx;
 };
 
@@ -25,6 +26,7 @@ public:
     virtual void HandleTranslationUnit(clang::ASTContext &context);
 
     bool isValidVarDecl();
+    bool isExternVarDecl();
     std::string getVarDeclIdx();
 
 private:

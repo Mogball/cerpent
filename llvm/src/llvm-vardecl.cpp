@@ -10,8 +10,13 @@ VarDeclVisitor::VarDeclVisitor(ASTContext *context) :
 
 bool VarDeclVisitor::TraverseVarDecl(VarDecl *decl) {
     RecursiveASTVisitor<VarDeclVisitor>::TraverseVarDecl(decl);
-    m_validVarDecl = !decl->isInvalidDecl();
-    m_varDeclIdx = decl->getNameAsString();
+    if (StorageClass::SC_Static == decl->getStorageClass()) {
+        llvm::errs() << "static keyword not supported\n";
+    } else {
+        m_validVarDecl = !decl->isInvalidDecl();
+        m_externVarDecl = StorageClass::SC_Extern == decl->getStorageClass();
+        m_varDeclIdx = decl->getNameAsString();
+    }
     return false;
 }
 
@@ -24,6 +29,10 @@ void VarDeclConsumer::HandleTranslationUnit(ASTContext &context) {
 
 bool VarDeclConsumer::isValidVarDecl() {
     return m_visitor.m_validVarDecl;
+}
+
+bool VarDeclConsumer::isExternVarDecl() {
+    return m_visitor.m_externVarDecl;
 }
 
 string VarDeclConsumer::getVarDeclIdx() {

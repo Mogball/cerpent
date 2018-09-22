@@ -39,7 +39,7 @@ static Error compileCppToBitcode(vector<string> &&args) {
     transform(args.begin(), args.end(), back_inserter(ccArgs),
             [](const string &s) { return s.c_str(); });
     if (int res = ccMain(ccArgs, "", nullptr)) {
-        return returnCodeError("Clang cc compilation failed", res);
+        return returnCodeError("Commandline parsing failed", res);
     }
     return Error::success();
 }

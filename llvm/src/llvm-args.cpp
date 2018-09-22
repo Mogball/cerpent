@@ -19,10 +19,12 @@ vector<string> getClangArgs(StringRef cpp, StringRef bc) {
         "-fdeprecated-macro",
         "-fmath-errno",
         "-fuse-init-array",
-        "-mrelocation-model",
-        "static",
-        "-mthread-model",
-        "posix",
+
+        "-Wno-gnu-designator",
+
+        "-mrelocation-model", "static",
+        "-mthread-model", "posix",
+
         "-masm-verbose",
         "-mconstructor-aliases",
         "-munwind-tables",
@@ -34,14 +36,11 @@ vector<string> getClangArgs(StringRef cpp, StringRef bc) {
         "-vectorize-loops",
         "-vectorize-slp",
 
-        "-resource-dir",
-        "/usr/lib/clang/6.0.0",
-        "-internal-isystem",
-        "/usr/lib/clang/6.0.0/include",
-        "-I",
-        "/usr/include",
-        "-I",
-        "/usr/include/x86_64-linux-gnu",
+        "-resource-dir", "/usr/lib/clang/6.0.0",
+        "-internal-isystem", "/usr/lib/clang/6.0.0/include",
+
+        "-I", "/usr/include/",
+        "-I", "/usr/include/x86_64-linux-gnu",
 
         "-o",
         bc.data(),

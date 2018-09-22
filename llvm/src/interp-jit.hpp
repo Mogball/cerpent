@@ -19,8 +19,10 @@ public:
     ~InterpreterJit();
 
     llvm::Expected<std::string> compileScript(std::string code);
-    llvm::Expected<bool> compileDecl(std::string code, bool ext);
+    llvm::Expected<bool> compileDecl(std::string code);
     llvm::Expected<bool> executeScript(std::string scriptName);
+    void appendDecl(std::string decl, bool ext);
+    std::string prepend(std::string unit);
 
 private:
     llvm::PrettyStackTraceProgram m_stackProgram;
@@ -37,5 +39,4 @@ private:
 
     std::string getImports();
     std::string getDecls();
-    void appendDecl(std::string decl, bool ext);
 };

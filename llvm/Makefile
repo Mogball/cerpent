@@ -12,5 +12,5 @@ $(BUILD_DIR):
 
 .PHONY: run
 
-run: $(BUILD_DIR)/$(EXE_NAME)
+run:
 	@$(BUILD_DIR)/$(EXE_NAME)

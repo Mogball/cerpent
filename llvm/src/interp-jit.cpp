@@ -21,6 +21,9 @@ InterpreterJit::InterpreterJit(int argc, char *argv[]) :
             "#include <stdio.h>\n"
             "#include <stdlib.h>\n"
             "#include <string.h>\n"
+            "#include <math.h>\n"
+            "#include <stdint.h>\n"
+            "#include <stddef.h>\n"
         ) {
     sys::PrintStackTraceOnErrorSignal(argv[0]);
     atexit(llvm_shutdown);
@@ -34,7 +37,7 @@ InterpreterJit::InterpreterJit(int argc, char *argv[]) :
 
 InterpreterJit::~InterpreterJit() = default;
 
-Expected<bool> InterpreterJit::compileDecl(string code, bool ext) {
+Expected<bool> InterpreterJit::compileDecl(string code) {
     string unit = getImports() + getDecls() + code;
     //outs() << unit << "\n";
     auto module = m_jit->compileModule(unit, m_context);
@@ -42,7 +45,6 @@ Expected<bool> InterpreterJit::compileDecl(string code, bool ext) {
         return module.takeError();
     }
     m_jit->submitModule(move(*module));
-    appendDecl(code, ext);
     return true;
 }
 
@@ -82,7 +84,15 @@ string InterpreterJit::getDecls() {
     return m_declAppend;
 }
 
+string InterpreterJit::prepend(string unit) {
+    return getDecls() + unit;
+}
+
 void InterpreterJit::appendDecl(string decl, bool ext) {
+    trim(&decl);
+    if (';' != decl.back()) {
+        decl += ';';
+    }
     size_t index = decl.find_first_of('=');
     if (string::npos != index) {
         decl = decl.substr(0, index);

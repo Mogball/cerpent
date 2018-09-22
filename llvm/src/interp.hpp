@@ -5,6 +5,9 @@
 #include <vector>
 
 class InterpreterJit;
+namespace clang {
+    class ASTContext;
+}
 
 class Interpreter {
 public:
@@ -14,6 +17,7 @@ public:
     error_t processLine(std::string &&line);
     error_t processBuffer(const std::string &buf);
     error_t processUnit(const std::string &unit);
+    error_t processScript(const std::string &script);
 
     error_t declareVariable(
             unsigned type,
