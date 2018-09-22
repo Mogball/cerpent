@@ -4,13 +4,15 @@ using namespace std;
 using namespace clang;
 
 VarDeclVisitor::VarDeclVisitor(ASTContext *context) :
-        m_context(context) {}
+        m_context(context),
+        m_validVarDecl(false),
+        m_varDeclIdx() {}
 
 bool VarDeclVisitor::TraverseVarDecl(VarDecl *decl) {
     RecursiveASTVisitor<VarDeclVisitor>::TraverseVarDecl(decl);
-    m_validVarDecl = !decl->isInvalidDecl() && nullptr != decl->evaluateValue();
+    m_validVarDecl = !decl->isInvalidDecl();
     m_varDeclIdx = decl->getNameAsString();
-    return m_validVarDecl;
+    return false;
 }
 
 VarDeclConsumer::VarDeclConsumer(ASTContext *context) :

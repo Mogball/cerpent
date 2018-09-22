@@ -75,7 +75,7 @@ int ccMain(ArrayRef<const char *> argv, const char *argv0, void *mainAddr) {
     }
 
     success = ExecuteCompilerInvocation(clang.get());
-    llvm::TimerGroup::printAll(llvm::errs());
+    llvm::TimerGroup::printAll(llvm::outs());
     llvm::remove_fatal_error_handler();
     if (clang->getFrontendOpts().DisableFree) {
         BuryPointer(move(clang));

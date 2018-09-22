@@ -38,7 +38,7 @@ static Error compileCppToBitcode(vector<string> &&args) {
     vector<const char *> ccArgs;
     transform(args.begin(), args.end(), back_inserter(ccArgs),
             [](const string &s) { return s.c_str(); });
-    if (int res = ccMain(ccArgs, "cc", nullptr)) {
+    if (int res = ccMain(ccArgs, "", nullptr)) {
         return returnCodeError("Clang cc compilation failed", res);
     }
     return Error::success();

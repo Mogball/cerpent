@@ -18,8 +18,8 @@ public:
     InterpreterJit(int argc, char *argv[]);
     ~InterpreterJit();
 
-    llvm::Expected<std::string> compileDecl(std::string code, std::string idx);
     llvm::Expected<std::string> compileScript(std::string code);
+    llvm::Expected<bool> compileDecl(std::string code, bool ext);
     llvm::Expected<bool> executeScript(std::string scriptName);
 
 private:
@@ -32,5 +32,10 @@ private:
     std::size_t m_scriptIndex;
     std::string m_scriptPrefix;
 
-    std::string wrapScript(std::string code);
+    std::string m_importAppend;
+    std::string m_declAppend;
+
+    std::string getImports();
+    std::string getDecls();
+    void appendDecl(std::string decl, bool ext);
 };

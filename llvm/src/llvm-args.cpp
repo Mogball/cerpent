@@ -38,6 +38,10 @@ vector<string> getClangArgs(StringRef cpp, StringRef bc) {
         "/usr/lib/clang/6.0.0",
         "-internal-isystem",
         "/usr/lib/clang/6.0.0/include",
+        "-I",
+        "/usr/include",
+        "-I",
+        "/usr/include/x86_64-linux-gnu",
 
         "-o",
         bc.data(),
