@@ -1,0 +1,15 @@
+int add(int a, int b) {
+    return a + b;
+}
+
+int h = 0;
+int g = 0;
+
+h = add(5, 6);
+g = add(11, 12);
+
+printf("h = %d\nh = %d\n", h, g);
+
+int c = 0;
+c = add(h, g);
+printf("c = %d\n", c);
